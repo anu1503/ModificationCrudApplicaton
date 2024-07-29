@@ -1,0 +1,138 @@
+﻿@model ModifiedCrudApp.Models.Employee
+
+@{
+    ViewData["Title"] = "Edit";
+    var countries = ViewData["Countries"] as List<string>;
+    var states = ViewData["States"] as Dictionary<string, List<string>>;
+}
+
+<div class="containercre">
+    <div class="row justify-content-center p-0">
+        <div class="col-md-8">
+            <div class="card shadow-lg mt-1 custom-card">
+                <div class="card-header custom-light-blue-header text-dark">
+                    <h4 class="mb-0 text-center custom-light-blue-header">Edit Employee</h4>
+                </div>
+                <div class="card-body custom-card-body">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-0"></div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="EmpNo" class="form-label"></label>
+                            <input asp-for="EmpNo" class="form-control" readonly />
+                            <span asp-validation-for="EmpNo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="EmpName" class="form-label"></label>
+                            <input asp-for="EmpName" class="form-control" />
+                            <span asp-validation-for="EmpName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" id="EmailInput" />
+                            <span asp-validation-for="Email" class="text-danger" id="EmailValidationMessage"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Gender" class="form-label"></label>
+                            <div class="form-check">
+                                <input asp-for="Gender" type="radio" value="Male" id="GenderMale" class="form-check-input" />
+                                <label for="GenderMale" class="form-check-label">Male</label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="Gender" type="radio" value="Female" id="GenderFemale" class="form-check-input" />
+                                <label for="GenderFemale" class="form-check-label">Female</label>
+                            </div>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Country" class="form-label"></label>
+                            <select asp-for="Country" class="form-control" id="CountryDropdown">
+                                <option value="">Select a country</option>
+                                @foreach (var country in countries)
+                                {
+                                    <option value="@country">@country</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="State" class="form-label"></label>
+                            <select asp-for="State" class="form-control" id="StateDropdown">
+                                <option value="">Select a state</option>
+                            </select>
+                            <span asp-validation-for="State" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <input type="submit" value="Save" class="btn btn-outline-info " />
+                            <a asp-action="Index" class="btn btn-outline-secondary customBack">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var states = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(states));
+            var selectedCountry = '@Model.Country';
+            var selectedState = '@Model.State';
+            var stateDropdown = $('#StateDropdown');
+
+            function populateStates(country) {
+                stateDropdown.empty();
+                stateDropdown.append('<option value="">Select a state</option>');
+
+                if (country && states[country]) {
+                    $.each(states[country], function (index, value) {
+                        stateDropdown.append('<option value="' + value + '">' + value + '</option>');
+                    });
+                }
+
+                // Set the previously selected state
+                if (selectedState) {
+                    stateDropdown.val(selectedState);
+                }
+            }
+
+            $('#CountryDropdown').change(function () {
+                var country = $(this).val();
+                populateStates(country);
+            });
+
+            // Trigger change event on page load to set initial states
+            $('#CountryDropdown').val(selectedCountry).change();
+
+            // Email validation on input change
+            $('#EmailInput').on('input', function () {
+                var email = $(this).val();
+                var empno = $('input[name="EmpNo"]').val(); // Assuming EmpNo is a hidden field
+
+                $.ajax({
+                    url: '@Url.Action("IsEmailAvailable", "Home")',
+                    type: 'GET',
+                    data: { email: email, empno: empno },
+                    success: function (response) {
+                        if (!response.isAvailable) {
+                            $('#EmailValidationMessage').text('Email already exists. Please try a different email.');
+                        } else {
+                            $('#EmailValidationMessage').text('');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

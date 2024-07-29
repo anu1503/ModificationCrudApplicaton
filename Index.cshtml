@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ModifiedCrudApp.Models.Employee>
+
+@{
+    ViewData["Title"] = "Employee Index";
+}
+
+<h3 class="text-center">Employee Index</h3>
+<div class="mb-2">
+    <a class="btn btn-outline-info" asp-action="Create">Create New</a>
+</div>
+<table class="table table-striped table-bordered shadow table-dark-text">
+    <thead class="bg-primary text-white">
+        <tr class="text-center">
+            <th>
+                @Html.DisplayNameFor(model => model.EmpNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmpName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="bg-lightblue text-darkblue text-center">
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmpNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmpName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.State)
+                </td>
+                <td>
+                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.EmpNo">Update</a>
+                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.EmpNo">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

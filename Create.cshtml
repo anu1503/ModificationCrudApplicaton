@@ -1,0 +1,129 @@
+﻿@model ModifiedCrudApp.Models.Employee
+@using Newtonsoft.Json
+
+@{
+    ViewData["Title"] = "Create";
+    var countries = ViewData["Countries"] as List<string>;
+    var states = ViewData["States"] as Dictionary<string, List<string>>;
+    var jsonStates = JsonConvert.SerializeObject(states);
+}
+
+<div class="containercre">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg mt-1 custom-card">
+                <div class="card-header text-dark custom-light-blue-header">
+                    <h4 class="mb-0 text-center">Employee Details</h4>
+                </div>
+                <div class="card-body custom-card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="EmpName" class="form-label"></label>
+                            <input asp-for="EmpName" class="form-control" placeholder="Enter Name" />
+                            <span asp-validation-for="EmpName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter Email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Gender" class="form-label"></label>
+                            <div class="form-check">
+                                <input asp-for="Gender" type="radio" value="Male" id="GenderMale" class="form-check-input" />
+                                <label for="GenderMale" class="form-check-label">Male</label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="Gender" type="radio" value="Female" id="GenderFemale" class="form-check-input" />
+                                <label for="GenderFemale" class="form-check-label">Female</label>
+                            </div>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="Country" class="form-label"></label>
+                            <select asp-for="Country" class="form-control" id="CountryDropdown">
+                                <option value="">Select a Country</option>
+                                @foreach (var country in countries)
+                                {
+                                    <option value="@country">@country</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label asp-for="State" class="form-label"></label>
+                            <select asp-for="State" class="form-control" id="StateDropdown">
+                                <option value="">Select a State</option>
+                            </select>
+                            <span asp-validation-for="State" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <input type="submit" value="Save" class="btn btn-primary custom-light-blue-header" />
+                            <a asp-action="Index" class="btn btn-secondary custom-gray-hover">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var states = @Html.Raw(jsonStates);
+
+        $(document).ready(function () {
+            // Country-State Dropdown Logic
+            $('#CountryDropdown').change(function () {
+                var selectedCountry = $(this).val();
+                var stateDropdown = $('#StateDropdown');
+
+                stateDropdown.empty();
+
+                if (selectedCountry) {
+                    stateDropdown.append('<option value="">Select a State</option>');
+                    $.each(states[selectedCountry], function (index, value) {
+                        stateDropdown.append('<option value="' + value + '">' + value + '</option>');
+                    });
+                } else {
+                    stateDropdown.append('<option value="">Select a State</option>');
+                }
+            });
+
+            // Trigger change event to populate states if a country is already selected
+            $('#CountryDropdown').trigger('change');
+
+            // Email Validation Logic
+            $('#userForm').on('submit', function (event) {
+                var email = $('#email').val();
+                var errorSpan = $('#emailError');
+
+                // Clear previous error
+                errorSpan.text('');
+
+                $.ajax({
+                    url: '/check-email',
+                    type: 'GET',
+                    data: { email: email },
+                    success: function (data) {
+                        if (data.exists) {
+                            errorSpan.text('Email already exists.');
+                            event.preventDefault(); // Prevent form submission
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

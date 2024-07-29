@@ -1,0 +1,104 @@
+﻿@{
+    
+    ViewData["Title"] = "Register";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Full height and width background image */
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1000%;
+            height: 100vh;
+            background-image: url('path-to-your-image.jpg'); /* Replace with your image path */
+            background-size: cover;
+            background-position: center;
+            z-index: -1; /* Ensure the background is behind the content */
+        }
+
+        /* Center the registration form */
+        .form-container {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            border-radius: 8px;
+        }
+
+        .custom-width {
+            width: 200px; /* Adjust this value as needed */
+        }
+  
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 10px;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-image">
+        <img src="~/image/background3.jpg" />
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        Register
+                    </div>
+                    <div class="card-body">
+                        <form method="post" asp-action="Register">
+                            <div class="form-group">
+                                <label for="Email">Email or Username</label>
+                                <input type="text" class="form-control" id="Email" name="Email" placeholder="Enter email or username">
+                            </div>
+                            <div class="form-group">
+                                <label for="Password">Password</label>
+                                <input type="password" class="form-control" id="Password" name="Password" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <label for="ConfirmPassword">Confirm Password</label>
+                                <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm Password">
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary" style="width:200px;">Sign Up</button>
+
+                            <div class="text-right">
+                                <p>Already have an account? <a asp-action="Login" class="btn btn-outline-primary " style="width:300px;">Login</a> </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
